@@ -2,30 +2,35 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Student;
+use Illuminate\Database\Seeder;
 
 class StudentSeeder extends Seeder
 {
     /**
+     * The total number of students the seeder aims to keep in the database.
+     */
+    private const TARGET_STUDENT_COUNT = 12;
+
+    /**
      * Run the database seeds.
      */
-   public function run()
-{
-    Student::create([
-        'name' => 'Juan Dela Cruz',
-        'email' => 'juan@example.com',
-        'age' => 20
-    ]);
+    public function run(): void
+    {
+        Student::firstOrCreate(
+            ['email' => 'juan@example.com'],
+            ['name' => 'Juan Dela Cruz', 'age' => 20],
+        );
 
-    Student::create([
-        'name' => 'Maria Santos',
-        'email' => 'maria@example.com',
-        'age' => 22
-    ]);
-     Student::factory(10)->create();
+        Student::firstOrCreate(
+            ['email' => 'maria@example.com'],
+            ['name' => 'Maria Santos', 'age' => 22],
+        );
 
-}
+        $remaining = max(0, self::TARGET_STUDENT_COUNT - Student::count());
 
+        if ($remaining > 0) {
+            Student::factory($remaining)->create();
+        }
+    }
 }
